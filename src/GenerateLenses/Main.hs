@@ -1,11 +1,9 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i runghc --pure -p 'pkgs.haskellPackages.ghcWithPackages (pkgs: with pkgs; [ text lens megaparsec ])'
-
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-module Main where
+
+module GenerateLenses.Main where
 
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -53,7 +51,9 @@ dataConsumer :: Parser m => m ()
 dataConsumer = void $ symbol "data"
 
 parseIdentifier :: Parser m => m Text
-parseIdentifier = try parseTuple <|> (lexeme $ takeWhile1P (Just "No valid identifier") isValid)
+parseIdentifier = do
+  void $ try (char '!') -- Drop strictness
+  try parseTuple <|> (lexeme $ takeWhile1P (Just "No valid identifier") isValid)
   where
     isValid c = isAlphaNum c || c == '_' || c == '[' || c == ']' || c == '.' || c == '-' || c == '>'
 
