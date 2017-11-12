@@ -52,7 +52,7 @@ dataConsumer = void $ symbol "data"
 
 parseIdentifier :: Parser m => m Text
 parseIdentifier = do
-  void $ try (char '!') -- Drop strictness
+  option () (void $ try (char '!')) -- Drop strictness
   try parseTuple <|> (lexeme $ takeWhile1P (Just "No valid identifier") isValid)
   where
     isValid c = isAlphaNum c || c == '_' || c == '[' || c == ']' || c == '.' || c == '-' || c == '>'
