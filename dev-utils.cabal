@@ -30,6 +30,8 @@ library
                      , time
 
   exposed-modules:     GenerateLenses.Main
+                     , GenerateLenses.Parser
+                     , GenerateLenses.Lens
                      , MakeImportQualified.Main
                      , DevUtils.ImportLine
                      , GenerateModule.Main
