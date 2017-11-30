@@ -16,6 +16,7 @@ import Data.Char
 import System.IO
 import Data.Monoid
 import Control.Lens
+import System.Environment
 
 import GenerateLenses.Parser
 import GenerateLenses.Lens
@@ -27,8 +28,12 @@ example = "data Test i a b = Test { a -- Very cool a!\n:: Maybe Int\n, b :: Eite
 
 main :: IO ()
 main = do
+  args <- getArgs
   definitions <- T.getContents
   let r = parse parseRecords "data Definitions" definitions
   case r of
     Left e -> hPutStrLn stderr $ show e
-    Right records -> T.putStr $ showRecords records
+    Right records -> case args of
+                       ["classy"] -> T.putStr $ showRecordsClassy records
+                       [] -> T.putStr $ showRecords records
+                       _ -> hPutStrLn stderr "Usage dev-GenerateLenses [classy]"

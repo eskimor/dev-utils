@@ -9,7 +9,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Text.Megaparsec.Char.Lexer as L
 import Text.Megaparsec
-import Text.Megaparsec.Char (spaceChar, space1, char, anyChar, string, notChar, satisfy)
+import Text.Megaparsec.Char (space1, char, anyChar)
 import Data.Functor
 import Data.Char
 
@@ -119,17 +119,43 @@ parseRecord = do
 parseRecords :: Parser m => m [Record]
 parseRecords = some $ try parseRecord
 
--- Lenses for Record:
-recordType :: Lens' Record Text
-recordType f record' = (\recordType' -> record' { _recordType = recordType' }) <$> f (_recordType record')
+class HasRecord a where
+  record :: Lens' a Record
 
-recordFields :: Lens' Record [Field]
-recordFields f record' = (\recordFields' -> record' { _recordFields = recordFields' }) <$> f (_recordFields record')
+  recordType :: Lens' a Text
+  recordType = record . go
+    where
+      go :: Lens' Record Text
+      go f record' = (\recordType' -> record' { _recordType = recordType' }) <$> f (_recordType record')
 
 
--- Lenses for Field:
-fieldName :: Lens' Field Text
-fieldName f field' = (\fieldName' -> field' { _fieldName = fieldName' }) <$> f (_fieldName field')
+  recordFields :: Lens' a [Field]
+  recordFields = record . go
+    where
+      go :: Lens' Record [Field]
+      go f record' = (\recordFields' -> record' { _recordFields = recordFields' }) <$> f (_recordFields record')
 
-fieldType :: Lens' Field Text
-fieldType f field' = (\fieldType' -> field' { _fieldType = fieldType' }) <$> f (_fieldType field')
+
+instance HasRecord Record where
+  record = id
+
+class HasField a where
+  field :: Lens' a Field
+
+  fieldName :: Lens' a Text
+  fieldName = field . go
+    where
+      go :: Lens' Field Text
+      go f field' = (\fieldName' -> field' { _fieldName = fieldName' }) <$> f (_fieldName field')
+
+
+  fieldType :: Lens' a Text
+  fieldType = field . go
+    where
+      go :: Lens' Field Text
+      go f field' = (\fieldType' -> field' { _fieldType = fieldType' }) <$> f (_fieldType field')
+
+
+instance HasField Field where
+  field = id
+
