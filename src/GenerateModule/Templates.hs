@@ -39,7 +39,7 @@ exposedContent Module{..}
          , "commentary with @some markup@."
          , "-}"
          , "module" <+> _fullName <+> align (vsep [ "( -- * Types"
-                                                       , "," <+> _name <> "(..)"
+                                                       , " " <+> _name <> "(..)"
                                                        , ") where"
                                                        ])
 
