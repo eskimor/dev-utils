@@ -17,7 +17,7 @@ internalContent Module{..}
   = vsep
       $  [ "{-|"
          , "Module      :" <+> _internalName
-         , "Description : Types and internal function for \"" <> _fullName <> "\""
+         , "Description : Types and internal functions for \"" <> _fullName <> "\""
          , "Copyright   :" <+> _copyrightNotice
          , "-}"
          , "module" <+> _internalName <+> "where"
